@@ -4,18 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Каталог настільних ігор</title>
-
+    
     <!-- Підключення файлу стилів -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- Шапка з навігацією та пошуком -->
+    
+    <!-- Шапка сайту з головним заголовком та навігацією -->
+    <header>
+        <h1>Каталог настільних ігор</h1>
+        <nav>
+            <a href="#filters">Фільтри</a>
+            <a href="#games">Ігри</a>
+        </nav>
+    </header>
 
-    <!-- Блок фільтрів (кількість гравців, жанр) -->
+    <!-- Основний унікальний вміст сторінки -->
+    <main>
+        <!-- Секція 1: Блок фільтрів -->
+        <section id="filters">
+            <h2>Фільтри</h2>
+            <form>
+                <!-- Зв'язок label та input через атрибути for та id -->
+                <label for="players-count">Кількість гравців:</label>
+                <input type="number" id="players-count" name="players" min="1" max="10">
+                
+                <label for="game-genre">Жанр:</label>
+                <select id="game-genre" name="genre">
+                    <option value="strategy">Стратегія</option>
+                    <option value="party">Паті-гейм</option>
+                    <option value="family">Сімейна</option>
+                </select>
+            </form>
+        </section>
 
-    <!-- Список карток ігор -->
+        <!-- Секція 2: Список карток ігор -->
+        <section id="games">
+            <h2>Ігри</h2>
+            
+            <!-- Самодостатня картка окремої гри -->
+            <article>
+                <h3>Каркассон</h3>
+                <!-- Зображення з обов'язковим атрибутом alt для доступності -->
+                <img src="assets/img/carcassonne.jpg" alt="Фото ігрового процесу Каркассон">
+            </article>
 
-    <!-- Підвал -->
+            <article>
+                <h3>Манчкін</h3>
+                <img src="assets/img/munchkin.jpg" alt="Коробка настільної гри Манчкін">
+            </article>
+
+            <article>
+                <h3>Монополія</h3>
+                <img src="assets/img/monopoly.jpg" alt="Ігрове поле Монополії">
+            </article>
+        </section>
+    </main>
+
+    <!-- Підвал сторінки з інформацією про авторство -->
+    <footer>
+        <p>Лабораторна 1 ІП-52 Сильченко Дмитро</p>
+    </footer>
 
     <!-- Підключення файлу скриптів (завжди перед закриваючим тегом body) -->
     <script src="js/app.js"></script>
