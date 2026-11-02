@@ -1,6 +1,8 @@
 
 console.log('script.js підключено');
 
+const API_URL = 'https://jsonplaceholder.typicode.com/todos?userId=1';
+
 // Масив настільних ігор
 const games = [
     {
@@ -61,55 +63,70 @@ for (const game of games) {
 }
 
 // Функція створює картки ігор на основі масиву
-function renderGames(gamesList) {
+// Використовується для локальних ігор та даних API
+function renderGames(gamesList, container = listContainer, isApi = false) {
 
-    // Видаляємо попередні картки зі сторінки
-    const oldCards = listContainer.querySelectorAll('.card');
-
+    // Видаляємо попередні картки
+    const oldCards = container.querySelectorAll('.card');
     oldCards.forEach(card => card.remove());
 
-    // Створюємо нові картки
     for (const game of gamesList) {
 
         const card = document.createElement('article');
         card.classList.add('card');
 
-        card.dataset.players =
-            `${game.minPlayers}-${game.maxPlayers}`;
-
-        // Позначаємо ігри, які підходять для 4 гравців
-        if (fitsPlayers(game, 4)) {
-            card.classList.add('fits');
-        }
-
-        // Інформація про кількість гравців
-        const players = document.createElement('p');
-        players.classList.add('badge');
-        players.textContent =
-            `👥 ${game.minPlayers}-${game.maxPlayers} гравців`;
-
-        // Назва гри
         const title = document.createElement('h3');
         title.textContent = game.title;
 
-        card.append(players, title);
+        // Картки ігор, отриманих із зовнішнього API
+        if (isApi) {
+            const status = document.createElement('p');
+            status.classList.add('api-status');
 
-        // Додаємо зображення, якщо воно є
-        if (game.image) {
-            const image = document.createElement('img');
-            image.src = game.image;
-            image.alt = game.alt;
+            if (game.completed) {
+                status.textContent = 'Вже зіграно';
+            } else {
+                status.textContent = 'Ще не зіграно';
+            }
 
-            card.append(image);
+            card.append(title, status);
+        } else {
+
+            // Атрибут з кількістю гравців
+            card.dataset.players =
+                `${game.minPlayers}-${game.maxPlayers}`;
+
+            // Позначаємо ігри для 4 гравців
+            if (fitsPlayers(game, 4)) {
+                card.classList.add('fits');
+            }
+
+            const players = document.createElement('p');
+            players.classList.add('badge');
+            players.textContent =
+                `👥 ${game.minPlayers}-${game.maxPlayers} гравців`;
+
+            card.append(players, title);
+
+            // Додаємо зображення, якщо воно є
+            if (game.image) {
+                const image = document.createElement('img');
+                image.src = game.image;
+                image.alt = game.alt;
+
+                card.append(image);
+            }
         }
 
-        // Додаємо картку на сторінку
-        listContainer.append(card);
+        // Додаємо готову картку в контейнер
+        container.append(card);
     }
 
-    // Оновлюємо кількість відображених ігор
-    gamesCount.textContent =
-        `Кількість ігор: ${gamesList.length}`;
+    // Оновлюємо лічильник локальних ігор
+    if (!isApi) {
+        gamesCount.textContent =
+            `Кількість ігор: ${gamesList.length}`;
+    }
 }
 
 // Функція фільтрує ігри за кількістю гравців
@@ -129,11 +146,10 @@ function updateDisplayedGames() {
     }
 }
 
-// Початкове відображення всіх ігор
+// Початкове відображення локальних ігор
 renderGames(games);
 
 // Елементи форми додавання нової гри
-
 const addGameForm = document.querySelector('#add-game-form');
 const titleInput = document.querySelector('#game-title');
 const minPlayersInput = document.querySelector('#min-players');
@@ -192,7 +208,7 @@ addGameForm.addEventListener('submit', event => {
     addGameForm.reset();
 });
 
-// При зміні чисел прибираємо попереднє повідомлення
+// Очищаємо попереднє повідомлення про помилку
 minPlayersInput.addEventListener('input', () => {
     formError.textContent = '';
 });
@@ -201,7 +217,7 @@ maxPlayersInput.addEventListener('input', () => {
     formError.textContent = '';
 });
 
-// Обробник зміни кількості гравців у фільтрі
+// Фільтрація при зміні кількості гравців
 playersSelect.addEventListener('change', () => {
     updateDisplayedGames();
 });
@@ -211,3 +227,75 @@ filterForm.addEventListener('submit', event => {
     event.preventDefault();
     updateDisplayedGames();
 });
+
+
+// =========================================
+// ПРАКТИКУМ 9. РОБОТА ІЗ ЗОВНІШНІМ API
+// =========================================
+
+// Елементи для роботи з API
+const apiListContainer = document.querySelector('#api-games-list');
+const apiLoading = document.querySelector('#api-loading');
+const apiError = document.querySelector('#api-error');
+const refreshApiButton = document.querySelector('#refresh-api');
+
+// Функція завантажує дані з JSONPlaceholder API
+// https://jsonplaceholder.typicode.com/
+async function loadApiGames() {
+
+    // Показуємо стан завантаження
+    apiLoading.hidden = false;
+    apiError.hidden = true;
+    apiError.textContent = '';
+    refreshApiButton.disabled = true;
+
+    try {
+        // Надсилаємо GET-запит до API
+        const response = await fetch(API_URL);
+
+        // Перевіряємо HTTP-статус
+        if (!response.ok) {
+            throw new Error(`HTTP помилка: ${response.status}`);
+        }
+
+        // Отримуємо дані у форматі JSON
+        const data = await response.json();
+
+        console.log('Дані, отримані з API:', data);
+
+        // Перевіряємо формат відповіді
+        if (!Array.isArray(data)) {
+            throw new Error('Некоректний формат відповіді API');
+        }
+
+        // Використовуємо функцію рендеру з практикуму 7
+        renderGames(data, apiListContainer, true);
+
+        console.log(`Завантажено записів: ${data.length}`);
+
+    } catch (error) {
+
+        // Повідомлення для користувача
+        apiError.textContent =
+            'Не вдалося завантажити ігри. Перевірте з’єднання та спробуйте ще раз.';
+
+        apiError.hidden = false;
+
+        // Детальна помилка для розробника
+        console.error('Помилка завантаження API:', error);
+
+    } finally {
+
+        // Приховуємо завантаження незалежно від результату
+        apiLoading.hidden = true;
+        refreshApiButton.disabled = false;
+    }
+}
+
+// Кнопка повторного завантаження даних
+refreshApiButton.addEventListener('click', () => {
+    loadApiGames();
+});
+
+// Завантажуємо дані при відкритті сторінки
+loadApiGames();

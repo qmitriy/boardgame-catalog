@@ -121,11 +121,26 @@
 
         <p id="games-count">Кількість ігор: 0</p>
       </section>
+
+    <!-- Секція завантаження ігор із зовнішнього API -->
+    <section id="api-games">
+      <h2>Ігри із зовнішнього API</h2>
+
+      <button type="button" id="refresh-api" class="btn-filter">
+        Оновити дані
+      </button>
+
+      <p id="api-loading" hidden>Завантаження...</p>
+
+      <p id="api-error" role="alert" hidden></p>
+
+      <div id="api-games-list" class="cards"></div>
+    </section>
     </main>
 
     <!-- Підвал сторінки -->
     <footer>
-      <p>Лабораторна 5 ІП-52 Сильченко Дмитро</p>
+      <p>Лабораторна 9 ІП-52 Сильченко Дмитро</p>
     </footer>
 
     <!-- Підключення скриптів -->
