@@ -1,89 +1,134 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Каталог настільних ігор</title>
-    
+
     <!-- Підключаємо грайливий шрифт Fredoka для заголовків та нейтральний Inter для тексту -->
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
     <!-- Підключення файлу стилів -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css" />
 
     <!-- Підключення JavaScript для лабораторної роботи 6 -->
     <script src="script.js" defer></script>
-</head>
-<body>
-
+  </head>
+  <body>
     <!-- Шапка сайту -->
     <header>
-        <h1>Каталог настільних ігор</h1>
-        <nav>
-            <a href="#filters">Фільтри</a>
-            <a href="#games">Ігри</a>
-        </nav>
+      <h1>Каталог настільних ігор</h1>
+      <nav>
+        <a href="#filters">Фільтри</a>
+        <a href="#games">Ігри</a>
+      </nav>
     </header>
 
     <!-- Основний вміст -->
     <main>
-        <!-- Секція 1: Блок фільтрів -->
-        <section id="filters">
-            <h2>Фільтри</h2>
-            <form>
-                <label for="players-count">Кількість гравців:</label>
-                <input type="number" id="players-count" name="players" min="1" max="10">
-                
-                <label for="game-genre">Жанр:</label>
-                <select id="game-genre" name="genre">
-                    <option value="strategy">Стратегія</option>
-                    <option value="party">Паті-гейм</option>
-                    <option value="family">Сімейна</option>
-                </select>
-                
-                <!-- Чітка вимога: Кнопка фільтрів -->
-                <button type="submit" class="btn-filter">Застосувати</button>
-            </form>
-        </section>
+      <!-- Секція 1: Блок фільтрів -->
+      <section id="filters">
+        <h2>Фільтри</h2>
+        <form>
+          <label for="players-count">Кількість гравців:</label>
 
-        <!-- Секція 2: Список карток ігор -->
-        <section id="games">
-            <h2>Ігри</h2>
-            
-            <div class="cards" id="games-list">
-                <!-- Картка 1 -->
-                <article class="card">
-                    <div class="badge">👥 2-5 гравців</div>
-                    <h3>Каркассон</h3>
-                    <img src="assets/img/Carcassonne.png" alt="Фото ігрового процесу Каркассон">
-                </article>
+          <select id="players-count" name="players">
+            <option value="">Усі ігри</option>
+            <option value="1">1 гравець</option>
+            <option value="2">2 гравці</option>
+            <option value="3">3 гравці</option>
+            <option value="4">4 гравці</option>
+            <option value="5">5 гравців</option>
+            <option value="6">6 гравців</option>
+            <option value="7">7 гравців</option>
+            <option value="8">8 гравців</option>
+            <option value="9">9 гравців</option>
+            <option value="10">10 гравців</option>
+          </select>
 
-                <!-- Картка 2 -->
-                <article class="card">
-                    <div class="badge">👥 3-6 гравців</div>
-                    <h3>Манчкін</h3>
-                    <img src="assets/img/munchkin.jpg" alt="Коробка настільної гри Манчкін">
-                </article>
+          <label for="game-genre">Жанр:</label>
+          <select id="game-genre" name="genre">
+            <option value="strategy">Стратегія</option>
+            <option value="party">Паті-гейм</option>
+            <option value="family">Сімейна</option>
+          </select>
 
-                <!-- Картка 3 -->
-                <article class="card">
-                    <div class="badge">👥 2-6 гравців</div>
-                    <h3>Монополія</h3>
-                    <img src="assets/img/monopoly.jpg" alt="Ігрове поле Монополії">
-                </article>
-            </div>
+          <!-- Чітка вимога: Кнопка фільтрів -->
+          <button type="submit" class="btn-filter">Застосувати</button>
+        </form>
+      </section>
 
-            <p id="games-count">Кількість ігор: 0</p>
-        </section>
+      <!-- Секція 2: Список карток ігор -->
+      <section id="games">
+        <h2>Ігри</h2>
+
+        <!-- Форма додавання нової гри -->
+        <form id="add-game-form">
+          <h3>Додати нову гру</h3>
+
+          <label for="game-title">Назва гри:</label>
+          <input type="text" id="game-title" required />
+
+          <label for="min-players">Мінімальна кількість гравців:</label>
+          <input type="number" id="min-players" min="1" required />
+
+          <label for="max-players">Максимальна кількість гравців:</label>
+          <input type="number" id="max-players" min="1" required />
+
+          <label for="new-game-genre">Жанр:</label>
+          <select id="new-game-genre">
+            <option value="strategy">Стратегія</option>
+            <option value="party">Паті-гейм</option>
+            <option value="family">Сімейна</option>
+          </select>
+
+          <p id="form-error"></p>
+
+          <button type="submit" class="btn-filter">Додати гру</button>
+        </form>
+
+        <div class="cards" id="games-list">
+          <!-- Картка 1 -->
+          <article class="card">
+            <div class="badge">👥 2-5 гравців</div>
+            <h3>Каркассон</h3>
+            <img
+              src="assets/img/Carcassonne.png"
+              alt="Фото ігрового процесу Каркассон"
+            />
+          </article>
+
+          <!-- Картка 2 -->
+          <article class="card">
+            <div class="badge">👥 3-6 гравців</div>
+            <h3>Манчкін</h3>
+            <img
+              src="assets/img/munchkin.jpg"
+              alt="Коробка настільної гри Манчкін"
+            />
+          </article>
+
+          <!-- Картка 3 -->
+          <article class="card">
+            <div class="badge">👥 2-6 гравців</div>
+            <h3>Монополія</h3>
+            <img src="assets/img/monopoly.jpg" alt="Ігрове поле Монополії" />
+          </article>
+        </div>
+
+        <p id="games-count">Кількість ігор: 0</p>
+      </section>
     </main>
 
     <!-- Підвал сторінки -->
     <footer>
-        <p>Лабораторна 5 ІП-52 Сильченко Дмитро</p>
+      <p>Лабораторна 5 ІП-52 Сильченко Дмитро</p>
     </footer>
 
     <!-- Підключення скриптів -->
     <script src="js/app.js"></script>
-</body>
+  </body>
 </html>
