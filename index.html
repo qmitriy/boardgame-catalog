@@ -14,6 +14,9 @@
     <!-- Підключення файлу стилів -->
     <link rel="stylesheet" href="css/style.css" />
 
+    <!-- Vue 3 для практичної роботи №10 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
     <!-- Підключення JavaScript для лабораторної роботи 6 -->
     <script src="script.js" defer></script>
   </head>
@@ -90,52 +93,51 @@
           <button type="submit" class="btn-filter">Додати гру</button>
         </form>
 
-        <div class="cards" id="games-list">
-          <!-- Картка 1 -->
-          <article class="card">
-            <div class="badge">👥 2-5 гравців</div>
-            <h3>Каркассон</h3>
-            <img
-              src="assets/img/Carcassonne.png"
-              alt="Фото ігрового процесу Каркассон"
-            />
-          </article>
+        <!-- Каталог настільних ігор на Vue 3 -->
+        <div id="vue-games-app">
+          <!-- Активний фільтр за жанром -->
+          <div v-if="activeGenre" class="genre-filter">
+            <p>Обраний жанр: {{ activeGenre }}</p>
+            <button type="button" class="btn-filter" @click="resetGenre">
+              Показати всі ігри
+            </button>
+          </div>
 
-          <!-- Картка 2 -->
-          <article class="card">
-            <div class="badge">👥 3-6 гравців</div>
-            <h3>Манчкін</h3>
-            <img
-              src="assets/img/munchkin.jpg"
-              alt="Коробка настільної гри Манчкін"
-            />
-          </article>
+          <!-- Компоненти карток настільних ігор -->
+          <div class="cards" id="games-list">
+            <game-card
+              v-for="game in filteredGames"
+              :key="game.id"
+              :title="game.title"
+              :min-players="game.minPlayers"
+              :max-players="game.maxPlayers"
+              :genre="game.genre"
+              :image="game.image"
+              :alt="game.alt"
+              @filter="filterByGenre"
+            >
+            </game-card>
+          </div>
 
-          <!-- Картка 3 -->
-          <article class="card">
-            <div class="badge">👥 2-6 гравців</div>
-            <h3>Монополія</h3>
-            <img src="assets/img/monopoly.jpg" alt="Ігрове поле Монополії" />
-          </article>
+          <!-- Реактивний лічильник -->
+          <p id="games-count">Кількість ігор: {{ filteredGames.length }}</p>
         </div>
-
-        <p id="games-count">Кількість ігор: 0</p>
       </section>
 
-    <!-- Секція завантаження ігор із зовнішнього API -->
-    <section id="api-games">
-      <h2>Ігри із зовнішнього API</h2>
+      <!-- Секція завантаження ігор із зовнішнього API -->
+      <section id="api-games">
+        <h2>Ігри із зовнішнього API</h2>
 
-      <button type="button" id="refresh-api" class="btn-filter">
-        Оновити дані
-      </button>
+        <button type="button" id="refresh-api" class="btn-filter">
+          Оновити дані
+        </button>
 
-      <p id="api-loading" hidden>Завантаження...</p>
+        <p id="api-loading" hidden>Завантаження...</p>
 
-      <p id="api-error" role="alert" hidden></p>
+        <p id="api-error" role="alert" hidden></p>
 
-      <div id="api-games-list" class="cards"></div>
-    </section>
+        <div id="api-games-list" class="cards"></div>
+      </section>
     </main>
 
     <!-- Підвал сторінки -->

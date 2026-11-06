@@ -301,3 +301,61 @@ footer {
         grid-template-columns: 1fr;
     }
 }
+
+/* =========================================
+   ПРАКТИКУМ 10. VUE 3
+========================================= */
+
+/* Кнопка жанру в картці гри */
+.game-genre {
+    display: block;
+    margin-top: 12px;
+    padding: 10px 14px;
+    min-height: 44px;
+
+    background-color: #eee9f5;
+    color: #4F4275;
+    border: 1px solid #6B5B95;
+    border-radius: 6px;
+
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+
+    transition: background-color 0.3s;
+}
+
+.game-genre:hover {
+    background-color: #ddd3ed;
+}
+
+/* Інформація про активний фільтр */
+.genre-filter {
+    background-color: #ffffff;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+.genre-filter p {
+    margin: 0 0 10px;
+    font-weight: bold;
+    color: #4F4275;
+}
+
+/* Не розтягуємо одну картку на всю ширину */
+
+/* Планшети — дві колонки */
+@media (min-width: 600px) {
+    #games-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Десктоп — три колонки */
+@media (min-width: 1024px) {
+    #games-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
