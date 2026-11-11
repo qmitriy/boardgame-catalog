@@ -21,7 +21,7 @@ function saveToLocalStorage(items) {
     }
 }
 
-// Завантажуємо збережені ігри з localStorage
+// Завантажуємо збережені ігри
 function loadFromLocalStorage() {
     try {
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -203,8 +203,6 @@ async function migrateGamesToIndexedDB() {
 }
 
 
-
-
 // Для практикуму 10 обрано Vue 3, оскільки він дозволяє
 // створювати реактивні компоненти без Node.js та збірки.
 
@@ -241,7 +239,10 @@ const GameCard = {
         maxPlayers: Number,
         genre: String,
         image: String,
-        alt: String
+        alt: String,
+
+        // Практикум 12: визначення гри дня
+        isGameOfDay: Boolean
     },
 
     emits: ['filter', 'toggle-played', 'delete-game'],
@@ -261,11 +262,19 @@ const GameCard = {
     template: `
         <article
             class="card"
-            :class="{ fits: minPlayers <= 4 && maxPlayers >= 4 }"
+            :class="{
+                fits: minPlayers <= 4 && maxPlayers >= 4,
+                'game-of-day': isGameOfDay
+            }"
             :data-players="minPlayers + '-' + maxPlayers"
         >
             <p class="badge">
                 👥 {{ minPlayers }}-{{ maxPlayers }} гравців
+            </p>
+
+            <!-- Практикум 12. Позначка гри дня -->
+            <p v-if="isGameOfDay" class="game-day-label">
+                Гра дня
             </p>
 
             <h3>{{ title }}</h3>
@@ -284,7 +293,9 @@ const GameCard = {
                 Жанр: {{ genreLabel }}
             </button>
 
-            <p>Статус: {{ played ? 'Зіграно' : 'Не зіграно' }}</p>
+            <p>
+                Статус: {{ played ? 'Зіграно' : 'Не зіграно' }}
+            </p>
 
             <button
                 type="button"
@@ -380,7 +391,11 @@ const vueApp = Vue.createApp({
                 }
             }
 
-            localStorage.setItem('boardgameCatalogDBInitialized', 'true');
+            localStorage.setItem(
+                'boardgameCatalogDBInitialized',
+                'true'
+            );
+
             this.storageReady = true;
 
             // Обчислюємо наступний унікальний id
@@ -411,9 +426,31 @@ const vueApp = Vue.createApp({
         }
     },
 
-
-    // Автоматично обчислюємо відфільтрований список
+    // Автоматично обчислюємо реактивні значення
     computed: {
+
+        // Практикум 12. Гра дня на основі дати та каталогу
+        gameOfDayId() {
+            if (this.games.length === 0) {
+                return null;
+            }
+
+            const today = new Date();
+
+            const dayNumber = Math.floor(
+                Date.UTC(
+                    today.getFullYear(),
+                    today.getMonth(),
+                    today.getDate()
+                ) / 86400000
+            );
+
+            const index = dayNumber % this.games.length;
+
+            return this.games[index].id;
+        },
+
+        // Список після застосування фільтрів
         filteredGames() {
             return this.games.filter(game => {
                 const genreMatches =
@@ -463,9 +500,12 @@ const vueApp = Vue.createApp({
             };
 
             await putGameToDB(newGame);
+
             this.games.push(newGame);
             this.nextId++;
+
             saveToLocalStorage(this.games);
+
             this.activeGenre = null;
             this.selectedPlayers = null;
         },
@@ -473,9 +513,15 @@ const vueApp = Vue.createApp({
         // Оновлення статусу «зіграно» без створення дубліката
         async togglePlayed(id) {
             const game = this.games.find(item => item.id === id);
-            if (!game || !this.storageReady) return;
 
-            const updated = { ...game, played: !game.played };
+            if (!game || !this.storageReady) {
+                return;
+            }
+
+            const updated = {
+                ...game,
+                played: !game.played
+            };
 
             try {
                 await putGameToDB(updated);
@@ -490,12 +536,22 @@ const vueApp = Vue.createApp({
         // Видалення гри з IndexedDB та Vue
         async removeGame(id) {
             const game = this.games.find(item => item.id === id);
-            if (!game || !this.storageReady) return;
-            if (!confirm(`Видалити гру «${game.title}»?`)) return;
+
+            if (!game || !this.storageReady) {
+                return;
+            }
+
+            if (!confirm(`Видалити гру «${game.title}»?`)) {
+                return;
+            }
 
             try {
                 await deleteGameFromDB(id);
-                this.games = this.games.filter(item => item.id !== id);
+
+                this.games = this.games.filter(
+                    item => item.id !== id
+                );
+
                 saveToLocalStorage(this.games);
             } catch (error) {
                 console.error('Помилка видалення:', error);
@@ -513,7 +569,9 @@ showGames(vueApp.games, playersCount);
 console.log('Результат стрілкової функції:');
 
 for (const game of vueApp.games) {
-    console.log(`${game.title}: ${fitsPlayers(game, playersCount)}`);
+    console.log(
+        `${game.title}: ${fitsPlayers(game, playersCount)}`
+    );
 }
 
 
@@ -571,11 +629,16 @@ addGameForm.addEventListener('submit', async event => {
     try {
         // Зберігаємо гру в IndexedDB перед очищенням форми
         await vueApp.addGame(newGame);
+
         playersSelect.value = '';
+
         console.log(`Додано нову гру: ${title}`);
+
         addGameForm.reset();
     } catch (error) {
-        formError.textContent = 'Не вдалося зберегти гру в IndexedDB.';
+        formError.textContent =
+            'Не вдалося зберегти гру в IndexedDB.';
+
         console.error('Помилка збереження:', error);
     }
 });
@@ -614,14 +677,12 @@ filterForm.addEventListener('submit', event => {
 // ПРАКТИКУМ 9. РОБОТА ІЗ ЗОВНІШНІМ API
 // =========================================
 
-// Зовнішній API залишається окремим розділом
 const apiListContainer = document.querySelector('#api-games-list');
 const apiLoading = document.querySelector('#api-loading');
 const apiError = document.querySelector('#api-error');
 const refreshApiButton = document.querySelector('#refresh-api');
 
-// Рендер даних API з практикуму 9
-// Ручний рендер локальних ігор замінено на Vue GameCard
+// Відображення ігор із зовнішнього API
 function renderApiGames(gamesList) {
     apiListContainer.replaceChildren();
 
@@ -645,7 +706,6 @@ function renderApiGames(gamesList) {
 }
 
 // Завантаження даних з JSONPlaceholder API
-// https://jsonplaceholder.typicode.com/
 async function loadApiGames() {
     apiLoading.hidden = false;
     apiError.hidden = true;
@@ -658,7 +718,9 @@ async function loadApiGames() {
 
         // Перевіряємо HTTP-статус
         if (!response.ok) {
-            throw new Error(`HTTP помилка: ${response.status}`);
+            throw new Error(
+                `HTTP помилка: ${response.status}`
+            );
         }
 
         // Отримуємо JSON
@@ -674,7 +736,9 @@ async function loadApiGames() {
         // Відображаємо записи з API
         renderApiGames(data);
 
-        console.log(`Завантажено записів: ${data.length}`);
+        console.log(
+            `Завантажено записів: ${data.length}`
+        );
 
     } catch (error) {
         apiError.textContent =
@@ -682,7 +746,10 @@ async function loadApiGames() {
 
         apiError.hidden = false;
 
-        console.error('Помилка завантаження API:', error);
+        console.error(
+            'Помилка завантаження API:',
+            error
+        );
 
     } finally {
         apiLoading.hidden = true;

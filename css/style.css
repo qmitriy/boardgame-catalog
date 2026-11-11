@@ -1,19 +1,19 @@
-/* 
-   ОБҐРУНТУВАННЯ НЕЧІТКОЇ ВИМОГИ (Варіант 4): 
-   Щоб каталог було «приємно гортати», для заголовків карток (назви ігор) 
-   використано грайливий, округлий шрифт 'Fredoka' із жирним накресленням. 
-   Це створює дружній, ігровий настрій. Для основного тексту обрано нейтральний 
-   шрифт 'Inter' для ідеальної читабельності. Назви ігор зроблені жирними, 
-   а кількість гравців винесена в окремий бейдж як візуальний акцент картки.
+
+/*
+   Варіант 4. Каталог настільних ігор.
+   Fredoka використовується для заголовків,
+   Inter — для основного тексту.
 */
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
 body {
     margin: 0;
-    font-family: 'Inter', Tahoma, sans-serif; /* Нейтральний шрифт тексту */
+    font-family: 'Inter', Tahoma, sans-serif;
     font-size: 1rem;
     line-height: 1.6;
     color: #333333;
@@ -26,13 +26,15 @@ img {
 }
 
 /* =========================================
-   ШАПКА (Header)
+   ШАПКА САЙТУ
 ========================================= */
+
 header {
-    background-color: #4F4275; /* Темніший фіолетовий для гарантованого контрасту */
-    color: #ffffff; /* Контраст 4F4275 та ffffff >= 4.5:1 */
+    background-color: #4F4275;
+    color: #ffffff;
     padding: 20px 40px;
     border-bottom: 4px solid #FFD166;
+
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -41,7 +43,7 @@ header {
 
 header h1 {
     margin: 0;
-    font-family: 'Fredoka', sans-serif; /* Грайливий шрифт */
+    font-family: 'Fredoka', sans-serif;
 }
 
 header nav {
@@ -51,13 +53,15 @@ header nav {
 }
 
 header nav a {
-    color: #FFD166; /* Контраст FFD166 на 4F4275 відповідає нормі (> 4.5:1) */
+    color: #FFD166;
     text-decoration: none;
     font-weight: bold;
+
     transition: color 0.3s;
-    /* Чітка вимога: зручна область натискання (min 44px) */
+
     padding: 10px;
     min-height: 44px;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -70,6 +74,7 @@ header nav a:hover {
 /* =========================================
    ОСНОВНИЙ КОНТЕНТ
 ========================================= */
+
 main {
     max-width: 900px;
     margin: 0 auto;
@@ -88,13 +93,15 @@ section h2 {
 }
 
 /* =========================================
-   ФІЛЬТРИ ТА КНОПКА (Чітка вимога)
+   ФІЛЬТРИ
 ========================================= */
+
 #filters form {
     background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -105,27 +112,35 @@ section h2 {
     margin-bottom: -10px;
 }
 
-#filters input, #filters select {
+#filters input,
+#filters select {
     padding: 8px;
     border: 1px solid #cccccc;
     border-radius: 4px;
-    min-height: 44px; /* Зручна область натискання */
+    min-height: 44px;
 }
 
-/* Чітка вимога: Кнопка фільтрів (контрастний акцент, мінімум 44х44px) */
+/* Кнопки */
 .btn-filter {
-    background-color: #FFD166; /* Акцентний колір */
-    color: #222222; /* Темний текст для високого контрасту */
+    background-color: #FFD166;
+    color: #222222;
+
     font-family: 'Inter', sans-serif;
     font-weight: bold;
     font-size: 1rem;
+
     border: none;
     border-radius: 6px;
-    min-height: 44px; /* МІНІМУМ 44px по висоті */
-    min-width: 44px;  /* МІНІМУМ 44px по ширині */
+
+    min-height: 44px;
+    min-width: 44px;
     padding: 0 20px;
+
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.1s;
+
+    transition:
+        background-color 0.3s,
+        transform 0.1s;
 }
 
 .btn-filter:hover {
@@ -137,8 +152,9 @@ section h2 {
 }
 
 /* =========================================
-   ГАЛЕРЕЯ КАРТОК (Нечітка вимога)
+   ГАЛЕРЕЯ КАРТОК
 ========================================= */
+
 .cards {
     display: grid;
     grid-template-columns: 1fr;
@@ -149,9 +165,14 @@ section h2 {
     background-color: #ffffff;
     padding: 20px;
     border-radius: 12px;
+
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
-    position: relative; /* Необхідно для абсолютного позиціонування бейджа */
+
+    transition:
+        box-shadow 0.3s ease,
+        transform 0.3s ease;
+
+    position: relative;
 }
 
 .card:hover {
@@ -159,101 +180,128 @@ section h2 {
     transform: translateY(-4px);
 }
 
-/* Нечітка вимога: Грайлива типографіка заголовків, жирні назви */
+/* Назва гри */
 .card h3 {
     margin-top: 0;
     margin-bottom: 10px;
+
     color: #222222;
-    font-family: 'Fredoka', sans-serif; /* Грайливий шрифт */
-    font-weight: 600; /* Жирні назви */
+
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
     font-size: 1.5rem;
 }
 
-/* Деталь варіанту: Бейдж кількості гравців як акцент */
+/* Кількість гравців */
 .badge {
     position: absolute;
     top: -15px;
     right: -15px;
-    background-color: #4ECDC4; /* Бірюзовий акцентний колір */
-    color: #111111; /* Високий контраст */
+
+    background-color: #4ECDC4;
+    color: #111111;
+
     font-weight: bold;
     font-size: 0.85rem;
+
     padding: 6px 12px;
     border-radius: 20px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     z-index: 2;
 }
 
+/* Зображення настільної гри */
 .card img {
     display: block;
+
     width: 100%;
     height: 250px;
+
     object-fit: cover;
     border-radius: 8px;
     margin-top: 10px;
 }
 
 /* =========================================
-   ПІДВАЛ (Footer)
+   ПІДВАЛ СТОРІНКИ
 ========================================= */
+
 footer {
     text-align: center;
     padding: 25px;
+
     font-size: 0.85rem;
     color: #666666;
+
     background-color: #e9ecef;
     margin-top: 50px;
 }
 
 /* =========================================
-   МЕДІА-ЗАПИТИ (Адаптивність)
+   АДАПТИВНІСТЬ
 ========================================= */
+
 @media (min-width: 600px) {
     header {
         flex-direction: row;
         justify-content: space-between;
     }
+
     header nav {
         flex-direction: row;
         gap: 10px;
     }
+
     #filters form {
         flex-direction: row;
         flex-wrap: wrap;
         align-items: flex-end;
     }
+
     #filters label {
         margin-bottom: 0;
         margin-right: 10px;
     }
-    #filters input, #filters select {
+
+    #filters input,
+    #filters select {
         margin-right: 15px;
         margin-bottom: 0;
     }
+
     .cards {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (min-width: 1024px) {
-    main { max-width: 1200px; }
+    main {
+        max-width: 1200px;
+    }
+
     .cards {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns:
+            repeat(auto-fit, minmax(200px, 1fr));
     }
 }
 
 /* =========================================
-   ФОРМА ДОДАВАННЯ НОВОЇ ГРИ (Практикум 8)
+   ПРАКТИКУМ 8. ФОРМА ДОДАВАННЯ ГРИ
 ========================================= */
+
 #add-game-form {
     background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
+
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
     margin-bottom: 30px;
 
     display: grid;
     grid-template-columns: 1fr 2fr;
+
     gap: 15px;
     align-items: center;
 }
@@ -261,6 +309,7 @@ footer {
 #add-game-form h3 {
     grid-column: 1 / -1;
     margin: 0 0 10px;
+
     font-family: 'Fredoka', sans-serif;
     color: #4F4275;
 }
@@ -273,15 +322,19 @@ footer {
 #add-game-form select {
     width: 100%;
     min-width: 0;
+
     padding: 10px;
+
     border: 1px solid #cccccc;
     border-radius: 4px;
+
     min-height: 44px;
     font-family: 'Inter', sans-serif;
 }
 
 #form-error {
     grid-column: 1 / -1;
+
     color: #b42318;
     font-weight: bold;
     margin: 0;
@@ -306,21 +359,24 @@ footer {
    ПРАКТИКУМ 10. VUE 3
 ========================================= */
 
-/* Кнопка жанру в картці гри */
+/* Кнопки всередині картки */
 .game-genre {
     display: block;
+
     margin-top: 12px;
     padding: 10px 14px;
     min-height: 44px;
 
     background-color: #eee9f5;
     color: #4F4275;
+
     border: 1px solid #6B5B95;
     border-radius: 6px;
 
     font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
     font-weight: bold;
+
     cursor: pointer;
 
     transition: background-color 0.3s;
@@ -330,7 +386,7 @@ footer {
     background-color: #ddd3ed;
 }
 
-/* Інформація про активний фільтр */
+/* Інформація про активний жанр */
 .genre-filter {
     background-color: #ffffff;
     padding: 15px 20px;
@@ -344,18 +400,102 @@ footer {
     color: #4F4275;
 }
 
-/* Не розтягуємо одну картку на всю ширину */
-
-/* Планшети — дві колонки */
+/* Розташування карток на планшеті */
 @media (min-width: 600px) {
     #games-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
     }
 }
 
-/* Десктоп — три колонки */
+/* Розташування карток на комп'ютері */
 @media (min-width: 1024px) {
     #games-list {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* =========================================
+   ПРАКТИКУМ 12. CSS-АНІМАЦІЇ
+   Варіант 4. Каталог настільних ігор
+========================================= */
+
+/* Анімоване підсвічування гри дня */
+.game-of-day {
+    border: 2px solid #FFD166;
+    animation: gameDayPulse 2.5s ease-in-out infinite;
+}
+
+/* Позначка "Гра дня" */
+.game-day-label {
+    display: inline-block;
+
+    margin: 0 0 10px;
+    padding: 5px 12px;
+
+    background-color: #FFD166;
+    color: #333333;
+
+    border-radius: 6px;
+
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+/* Пульсація навколо вибраної картки */
+@keyframes gameDayPulse {
+    0%, 100% {
+        box-shadow:
+            0 0 0 0 rgba(255, 209, 102, 0.4);
+    }
+
+    50% {
+        box-shadow:
+            0 0 0 10px rgba(255, 209, 102, 0);
+    }
+}
+
+/* Контейнер анімованого списку */
+#games-list {
+    position: relative;
+}
+
+/* Плавна поява та зникнення карток */
+.games-enter-active,
+.games-leave-active {
+    transition:
+        opacity 0.4s ease,
+        transform 0.4s ease;
+}
+
+/* Стан картки на початку появи
+   або в кінці зникнення */
+.games-enter-from,
+.games-leave-to {
+    opacity: 0;
+    transform: translateY(15px) scale(0.97);
+}
+
+/* Плавне переміщення після фільтрації */
+.games-move {
+    transition: transform 0.4s ease;
+}
+
+/* Картка, що зникає, не заважає іншим */
+.games-leave-active {
+    position: absolute;
+}
+
+/* Налаштування доступності */
+@media (prefers-reduced-motion: reduce) {
+    .game-of-day {
+        animation: none;
+    }
+
+    .games-enter-active,
+    .games-leave-active,
+    .games-move {
+        transition: none;
     }
 }
