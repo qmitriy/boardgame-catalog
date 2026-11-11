@@ -108,13 +108,17 @@
             <game-card
               v-for="game in filteredGames"
               :key="game.id"
+              :id="game.id"
               :title="game.title"
               :min-players="game.minPlayers"
               :max-players="game.maxPlayers"
               :genre="game.genre"
               :image="game.image"
               :alt="game.alt"
+              :played="game.played"
               @filter="filterByGenre"
+              @toggle-played="togglePlayed"
+              @delete-game="removeGame"
             >
             </game-card>
           </div>

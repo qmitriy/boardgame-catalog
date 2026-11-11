@@ -3,6 +3,208 @@ console.log('script.js підключено');
 
 const API_URL = 'https://jsonplaceholder.typicode.com/todos?userId=1';
 
+/* =========================================
+   ПРАКТИКУМ 11. LOCAL STORAGE
+========================================= */
+
+const STORAGE_KEY = 'boardgameCatalogGames';
+
+// Зберігаємо масив ігор у localStorage
+function saveToLocalStorage(items) {
+    try {
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(items)
+        );
+    } catch (error) {
+        console.error('Помилка збереження ігор:', error);
+    }
+}
+
+// Завантажуємо збережені ігри з localStorage
+function loadFromLocalStorage() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+
+        if (raw === null) {
+            return null;
+        }
+
+        const data = JSON.parse(raw);
+
+        return Array.isArray(data) ? data : null;
+    } catch (error) {
+        console.error('Помилка читання localStorage:', error);
+        return null;
+    }
+}
+
+/* =========================================
+   ПРАКТИКУМ 11. INDEXEDDB
+========================================= */
+
+const DB_NAME = 'BoardgameCatalogDB';
+const DB_VERSION = 1;
+const STORE_NAME = 'games';
+
+// Відкриття бази даних IndexedDB
+function openDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+        // Створення сховища при першому запуску
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+                db.createObjectStore(STORE_NAME, {
+                    keyPath: 'id'
+                });
+            }
+        };
+
+        // Успішне відкриття бази
+        request.onsuccess = () => {
+            resolve(request.result);
+        };
+
+        // Помилка відкриття
+        request.onerror = () => {
+            reject(request.error);
+        };
+    });
+}
+
+/* =========================================
+   CRUD-ОПЕРАЦІЇ INDEXEDDB
+========================================= */
+
+// Додавання або оновлення гри
+async function putGameToDB(game) {
+    const db = await openDB();
+
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+
+        tx.objectStore(STORE_NAME).put(game);
+
+        tx.oncomplete = () => {
+            db.close();
+            resolve();
+        };
+
+        tx.onerror = () => {
+            const error = tx.error;
+            db.close();
+            reject(error);
+        };
+    });
+}
+
+// Отримання всіх збережених ігор
+async function getAllGamesFromDB() {
+    const db = await openDB();
+
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readonly');
+        const request = tx.objectStore(STORE_NAME).getAll();
+
+        let games = [];
+
+        request.onsuccess = () => {
+            games = request.result;
+        };
+
+        tx.oncomplete = () => {
+            db.close();
+            resolve(games);
+        };
+
+        tx.onerror = () => {
+            const error = tx.error;
+            db.close();
+            reject(error);
+        };
+    });
+}
+
+// Видалення гри за її id
+async function deleteGameFromDB(id) {
+    const db = await openDB();
+
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+
+        tx.objectStore(STORE_NAME).delete(id);
+
+        tx.oncomplete = () => {
+            db.close();
+            resolve();
+        };
+
+        tx.onerror = () => {
+            const error = tx.error;
+            db.close();
+            reject(error);
+        };
+    });
+}
+
+/* =========================================
+   МІГРАЦІЯ LOCALSTORAGE В INDEXEDDB
+========================================= */
+
+const MIGRATION_KEY = 'boardgameCatalogMigrated';
+
+// Одноразове перенесення збережених ігор
+async function migrateGamesToIndexedDB() {
+
+    // Перевіряємо, чи виконувалася міграція
+    if (localStorage.getItem(MIGRATION_KEY) === 'true') {
+        console.log('Міграцію вже виконано');
+        return;
+    }
+
+    // Перевіряємо поточні записи IndexedDB
+    const existingGames = await getAllGamesFromDB();
+
+    if (existingGames.length > 0) {
+        console.log('IndexedDB не порожня. Міграцію пропущено');
+        return;
+    }
+
+    // Читаємо попередні дані
+    const savedGames = loadFromLocalStorage();
+
+    if (!savedGames || savedGames.length === 0) {
+        console.log('Немає даних для міграції');
+        return;
+    }
+
+    // Переносимо ігри зі збереженням старих полів
+    for (const game of savedGames) {
+        const migratedGame = {
+            ...game,
+            players: `${game.minPlayers}-${game.maxPlayers}`,
+            duration: game.duration ?? null,
+            owned: game.owned ?? false,
+            played: game.played ?? false
+        };
+
+        await putGameToDB(migratedGame);
+    }
+
+    // Позначаємо завершення міграції
+    localStorage.setItem(MIGRATION_KEY, 'true');
+
+    console.log(
+        `Успішно перенесено ${savedGames.length} ігор в IndexedDB`
+    );
+}
+
+
+
+
 // Для практикуму 10 обрано Vue 3, оскільки він дозволяє
 // створювати реактивні компоненти без Node.js та збірки.
 
@@ -32,6 +234,8 @@ function showGames(gamesList, count) {
 // Компонент окремої картки настільної гри
 const GameCard = {
     props: {
+        id: Number,
+        played: Boolean,
         title: String,
         minPlayers: Number,
         maxPlayers: Number,
@@ -40,7 +244,7 @@ const GameCard = {
         alt: String
     },
 
-    emits: ['filter'],
+    emits: ['filter', 'toggle-played', 'delete-game'],
 
     computed: {
         genreLabel() {
@@ -78,6 +282,24 @@ const GameCard = {
                 @click="$emit('filter', genre)"
             >
                 Жанр: {{ genreLabel }}
+            </button>
+
+            <p>Статус: {{ played ? 'Зіграно' : 'Не зіграно' }}</p>
+
+            <button
+                type="button"
+                class="game-genre"
+                @click="$emit('toggle-played', id)"
+            >
+                {{ played ? 'Скасувати зіграно' : 'Позначити як зіграну' }}
+            </button>
+
+            <button
+                type="button"
+                class="game-genre"
+                @click="$emit('delete-game', id)"
+            >
+                Видалити гру
             </button>
         </article>
     `
@@ -124,9 +346,71 @@ const vueApp = Vue.createApp({
 
             activeGenre: null,
             selectedPlayers: null,
-            nextId: 4
+            nextId: 4,
+            storageReady: false
         };
     },
+
+    // Завантаження ігор із IndexedDB при запуску Vue
+    async created() {
+        try {
+            // Переносимо старі дані, якщо міграція ще не виконана
+            await migrateGamesToIndexedDB();
+
+            // Читаємо записи з браузерної бази даних
+            const dbGames = await getAllGamesFromDB();
+
+            // Порожню раніше ініціалізовану базу не заповнюємо знову
+            if (
+                dbGames.length > 0 ||
+                localStorage.getItem(MIGRATION_KEY) === 'true' ||
+                localStorage.getItem('boardgameCatalogDBInitialized') === 'true'
+            ) {
+                this.games = dbGames;
+            } else {
+                // Перший запуск: зберігаємо початкові три гри
+                for (const game of this.games) {
+                    await putGameToDB({
+                        ...game,
+                        players: `${game.minPlayers}-${game.maxPlayers}`,
+                        duration: null,
+                        owned: false,
+                        played: false
+                    });
+                }
+            }
+
+            localStorage.setItem('boardgameCatalogDBInitialized', 'true');
+            this.storageReady = true;
+
+            // Обчислюємо наступний унікальний id
+            this.nextId = Math.max(
+                0,
+                ...this.games.map(game => Number(game.id) || 0)
+            ) + 1;
+
+            console.log(
+                `Завантажено з IndexedDB: ${dbGames.length} ігор`
+            );
+
+        } catch (error) {
+            console.error('Помилка IndexedDB:', error);
+            alert('IndexedDB недоступна. Показано резервні дані.');
+
+            // Резервне завантаження з localStorage
+            const savedGames = loadFromLocalStorage();
+
+            if (savedGames !== null) {
+                this.games = savedGames;
+            }
+
+            this.nextId = Math.max(
+                0,
+                ...this.games.map(game => Number(game.id) || 0)
+            ) + 1;
+        }
+    },
+
 
     // Автоматично обчислюємо відфільтрований список
     computed: {
@@ -163,16 +447,60 @@ const vueApp = Vue.createApp({
             this.selectedPlayers = count;
         },
 
-        // Додаємо нову гру в реактивний масив
-        addGame(game) {
-            this.games.push({
-                id: this.nextId++,
-                ...game
-            });
+        // Додавання нової гри в IndexedDB та Vue
+        async addGame(game) {
+            if (!this.storageReady) {
+                throw new Error('IndexedDB ще не готова');
+            }
 
-            // Скидаємо фільтри для показу нової гри
+            const newGame = {
+                id: this.nextId,
+                ...game,
+                players: `${game.minPlayers}-${game.maxPlayers}`,
+                duration: null,
+                owned: false,
+                played: false
+            };
+
+            await putGameToDB(newGame);
+            this.games.push(newGame);
+            this.nextId++;
+            saveToLocalStorage(this.games);
             this.activeGenre = null;
             this.selectedPlayers = null;
+        },
+
+        // Оновлення статусу «зіграно» без створення дубліката
+        async togglePlayed(id) {
+            const game = this.games.find(item => item.id === id);
+            if (!game || !this.storageReady) return;
+
+            const updated = { ...game, played: !game.played };
+
+            try {
+                await putGameToDB(updated);
+                Object.assign(game, updated);
+                saveToLocalStorage(this.games);
+            } catch (error) {
+                console.error('Помилка оновлення статусу:', error);
+                alert('Не вдалося оновити статус гри');
+            }
+        },
+
+        // Видалення гри з IndexedDB та Vue
+        async removeGame(id) {
+            const game = this.games.find(item => item.id === id);
+            if (!game || !this.storageReady) return;
+            if (!confirm(`Видалити гру «${game.title}»?`)) return;
+
+            try {
+                await deleteGameFromDB(id);
+                this.games = this.games.filter(item => item.id !== id);
+                saveToLocalStorage(this.games);
+            } catch (error) {
+                console.error('Помилка видалення:', error);
+                alert('Не вдалося видалити гру');
+            }
         }
     }
 }).mount('#vue-games-app');
@@ -206,7 +534,7 @@ const playersSelect = document.querySelector('#players-count');
 const filterForm = document.querySelector('#filters form');
 
 // Обробник надсилання форми нової гри
-addGameForm.addEventListener('submit', event => {
+addGameForm.addEventListener('submit', async event => {
     event.preventDefault();
 
     const title = titleInput.value.trim();
@@ -240,16 +568,16 @@ addGameForm.addEventListener('submit', event => {
         alt: ''
     };
 
-    // Додаємо гру через Vue замість ручного DOM
-    vueApp.addGame(newGame);
-
-    // Скидаємо вибір кількості гравців
-    playersSelect.value = '';
-
-    console.log(`Додано нову гру: ${title}`);
-
-    // Очищаємо форму
-    addGameForm.reset();
+    try {
+        // Зберігаємо гру в IndexedDB перед очищенням форми
+        await vueApp.addGame(newGame);
+        playersSelect.value = '';
+        console.log(`Додано нову гру: ${title}`);
+        addGameForm.reset();
+    } catch (error) {
+        formError.textContent = 'Не вдалося зберегти гру в IndexedDB.';
+        console.error('Помилка збереження:', error);
+    }
 });
 
 // Очищаємо повідомлення про помилку
