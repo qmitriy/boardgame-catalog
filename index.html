@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Каталог настільних ігор</title>
 
-    <!-- Шрифти для заголовків та основного тексту -->
     <link
         href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Inter:wght@400;500;700&display=swap"
         rel="stylesheet"
@@ -16,180 +16,208 @@
 
     <!-- Vue 3 -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <!-- Практикуми 6-12 -->
     <script src="script.js" defer></script>
+
+    <!-- Практикум 13. SPA -->
+    <script src="router.js" defer></script>
 </head>
 
 <body>
     <header>
         <h1>Каталог настільних ігор</h1>
 
+        <!-- Навігація SPA -->
         <nav>
-            <a href="#filters">Фільтри</a>
-            <a href="#games">Ігри</a>
+            <a href="#/" data-link>Усі ігри</a>
+            <a href="#/owned" data-link>Моя колекція</a>
         </nav>
     </header>
 
-    <main>
-        <!-- Фільтри каталогу -->
-        <section id="filters">
-            <h2>Фільтри</h2>
+    <main id="spa-app">
 
-            <form>
-                <label for="players-count">
-                    Кількість гравців:
-                </label>
+        <!-- Головна сторінка -->
+        <div id="home-view">
 
-                <select id="players-count" name="players">
-                    <option value="">Усі ігри</option>
-                    <option value="1">1 гравець</option>
-                    <option value="2">2 гравці</option>
-                    <option value="3">3 гравці</option>
-                    <option value="4">4 гравці</option>
-                    <option value="5">5 гравців</option>
-                    <option value="6">6 гравців</option>
-                    <option value="7">7 гравців</option>
-                    <option value="8">8 гравців</option>
-                    <option value="9">9 гравців</option>
-                    <option value="10">10 гравців</option>
-                </select>
+            <!-- Фільтри -->
+            <section id="filters">
+                <h2>Фільтри</h2>
 
-                <label for="game-genre">Жанр:</label>
+                <form>
+                    <label for="players-count">
+                        Кількість гравців:
+                    </label>
 
-                <select id="game-genre" name="genre">
-                    <option value="strategy">Стратегія</option>
-                    <option value="party">Паті-гейм</option>
-                    <option value="family">Сімейна</option>
-                </select>
+                    <select id="players-count" name="players">
+                        <option value="">Усі ігри</option>
+                        <option value="1">1 гравець</option>
+                        <option value="2">2 гравці</option>
+                        <option value="3">3 гравці</option>
+                        <option value="4">4 гравці</option>
+                        <option value="5">5 гравців</option>
+                        <option value="6">6 гравців</option>
+                        <option value="7">7 гравців</option>
+                        <option value="8">8 гравців</option>
+                        <option value="9">9 гравців</option>
+                        <option value="10">10 гравців</option>
+                    </select>
 
-                <button type="submit" class="btn-filter">
-                    Застосувати
-                </button>
-            </form>
-        </section>
+                    <label for="game-genre">Жанр:</label>
 
-        <!-- Каталог настільних ігор -->
-        <section id="games">
-            <h2>Ігри</h2>
+                    <select id="game-genre" name="genre">
+                        <option value="strategy">Стратегія</option>
+                        <option value="party">Паті-гейм</option>
+                        <option value="family">Сімейна</option>
+                    </select>
 
-            <!-- Форма додавання гри -->
-            <form id="add-game-form">
-                <h3>Додати нову гру</h3>
-
-                <label for="game-title">Назва гри:</label>
-                <input
-                    type="text"
-                    id="game-title"
-                    required
-                >
-
-                <label for="min-players">
-                    Мінімальна кількість гравців:
-                </label>
-                <input
-                    type="number"
-                    id="min-players"
-                    min="1"
-                    required
-                >
-
-                <label for="max-players">
-                    Максимальна кількість гравців:
-                </label>
-                <input
-                    type="number"
-                    id="max-players"
-                    min="1"
-                    required
-                >
-
-                <label for="new-game-genre">Жанр:</label>
-                <select id="new-game-genre">
-                    <option value="strategy">Стратегія</option>
-                    <option value="party">Паті-гейм</option>
-                    <option value="family">Сімейна</option>
-                </select>
-
-                <p id="form-error"></p>
-
-                <button type="submit" class="btn-filter">
-                    Додати гру
-                </button>
-            </form>
-
-            <!-- Vue 3 -->
-            <div id="vue-games-app">
-
-                <!-- Поточний фільтр -->
-                <div v-if="activeGenre" class="genre-filter">
-                    <p>Обраний жанр: {{ activeGenre }}</p>
-
-                    <button
-                        type="button"
-                        class="btn-filter"
-                        @click="resetGenre"
-                    >
-                        Показати всі ігри
+                    <button type="submit" class="btn-filter">
+                        Застосувати
                     </button>
-                </div>
+                </form>
+            </section>
 
-                <!-- Практикум 12: анімація списку -->
-                <transition-group
-                    name="games"
-                    tag="div"
-                    class="cards"
-                    id="games-list"
-                >
-                    <game-card
-                        v-for="game in filteredGames"
-                        :key="game.id"
-                        :id="game.id"
-                        :title="game.title"
-                        :min-players="game.minPlayers"
-                        :max-players="game.maxPlayers"
-                        :genre="game.genre"
-                        :image="game.image"
-                        :alt="game.alt"
-                        :played="game.played"
-                        :is-game-of-day="game.id === gameOfDayId"
-                        @filter="filterByGenre"
-                        @toggle-played="togglePlayed"
-                        @delete-game="removeGame"
+            <!-- Каталог -->
+            <section id="games">
+                <h2>Ігри</h2>
+
+                <!-- Форма додавання гри -->
+                <form id="add-game-form">
+                    <h3>Додати нову гру</h3>
+
+                    <label for="game-title">
+                        Назва гри:
+                    </label>
+
+                    <input
+                        type="text"
+                        id="game-title"
+                        required
                     >
-                    </game-card>
-                </transition-group>
 
-                <p id="games-count">
-                    Кількість ігор: {{ filteredGames.length }}
+                    <label for="min-players">
+                        Мінімальна кількість гравців:
+                    </label>
+
+                    <input
+                        type="number"
+                        id="min-players"
+                        min="1"
+                        required
+                    >
+
+                    <label for="max-players">
+                        Максимальна кількість гравців:
+                    </label>
+
+                    <input
+                        type="number"
+                        id="max-players"
+                        min="1"
+                        required
+                    >
+
+                    <label for="new-game-genre">
+                        Жанр:
+                    </label>
+
+                    <select id="new-game-genre">
+                        <option value="strategy">Стратегія</option>
+                        <option value="party">Паті-гейм</option>
+                        <option value="family">Сімейна</option>
+                    </select>
+
+                    <p id="form-error"></p>
+
+                    <button type="submit" class="btn-filter">
+                        Додати гру
+                    </button>
+                </form>
+
+                <!-- Vue-каталог -->
+                <div id="vue-games-app">
+
+                    <div
+                        v-if="activeGenre"
+                        class="genre-filter"
+                    >
+                        <p>
+                            Обраний жанр: {{ activeGenre }}
+                        </p>
+
+                        <button
+                            type="button"
+                            class="btn-filter"
+                            @click="resetGenre"
+                        >
+                            Показати всі ігри
+                        </button>
+                    </div>
+
+                    <!-- Анімований список із практикуму 12 -->
+                    <transition-group
+                        name="games"
+                        tag="div"
+                        class="cards"
+                        id="games-list"
+                    >
+                        <game-card
+                            v-for="game in filteredGames"
+                            :key="game.id"
+                            :id="game.id"
+                            :data-game-id="game.id"
+                            :title="game.title"
+                            :min-players="game.minPlayers"
+                            :max-players="game.maxPlayers"
+                            :genre="game.genre"
+                            :image="game.image"
+                            :alt="game.alt"
+                            :played="game.played"
+                            :is-game-of-day="game.id === gameOfDayId"
+                            @filter="filterByGenre"
+                            @toggle-played="togglePlayed"
+                            @delete-game="removeGame"
+                        >
+                        </game-card>
+                    </transition-group>
+
+                    <p id="games-count">
+                        Кількість ігор: {{ filteredGames.length }}
+                    </p>
+                </div>
+            </section>
+
+            <!-- Зовнішній API -->
+            <section id="api-games">
+                <h2>Ігри із зовнішнього API</h2>
+
+                <button
+                    type="button"
+                    id="refresh-api"
+                    class="btn-filter"
+                >
+                    Оновити дані
+                </button>
+
+                <p id="api-loading" hidden>
+                    Завантаження...
                 </p>
-            </div>
+
+                <p id="api-error" role="alert" hidden></p>
+
+                <div id="api-games-list" class="cards"></div>
+            </section>
+
+        </div>
+
+        <!-- Контейнер інших маршрутів SPA -->
+        <section id="route-view" class="spa-page" hidden>
         </section>
 
-        <!-- Дані зовнішнього API -->
-        <section id="api-games">
-            <h2>Ігри із зовнішнього API</h2>
-
-            <button
-                type="button"
-                id="refresh-api"
-                class="btn-filter"
-            >
-                Оновити дані
-            </button>
-
-            <p id="api-loading" hidden>
-                Завантаження...
-            </p>
-
-            <p id="api-error" role="alert" hidden></p>
-
-            <div id="api-games-list" class="cards"></div>
-        </section>
     </main>
 
     <footer>
-        <p>Лабораторна 12 ІП-52 Сильченко Дмитро</p>
+        <p>Лабораторна 13 ІП-52 Сильченко Дмитро</p>
     </footer>
-
-    <script src="js/app.js"></script>
 </body>
 </html>

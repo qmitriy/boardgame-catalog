@@ -1,8 +1,7 @@
 
 /*
    Варіант 4. Каталог настільних ігор.
-   Fredoka використовується для заголовків,
-   Inter — для основного тексту.
+   Fredoka — заголовки, Inter — основний текст.
 */
 
 *,
@@ -56,9 +55,7 @@ header nav a {
     color: #FFD166;
     text-decoration: none;
     font-weight: bold;
-
     transition: color 0.3s;
-
     padding: 10px;
     min-height: 44px;
 
@@ -124,18 +121,14 @@ section h2 {
 .btn-filter {
     background-color: #FFD166;
     color: #222222;
-
     font-family: 'Inter', sans-serif;
     font-weight: bold;
     font-size: 1rem;
-
     border: none;
     border-radius: 6px;
-
     min-height: 44px;
     min-width: 44px;
     padding: 0 20px;
-
     cursor: pointer;
 
     transition:
@@ -165,7 +158,6 @@ section h2 {
     background-color: #ffffff;
     padding: 20px;
     border-radius: 12px;
-
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
     transition:
@@ -180,13 +172,10 @@ section h2 {
     transform: translateY(-4px);
 }
 
-/* Назва гри */
 .card h3 {
     margin-top: 0;
     margin-bottom: 10px;
-
     color: #222222;
-
     font-family: 'Fredoka', sans-serif;
     font-weight: 600;
     font-size: 1.5rem;
@@ -197,27 +186,21 @@ section h2 {
     position: absolute;
     top: -15px;
     right: -15px;
-
     background-color: #4ECDC4;
     color: #111111;
-
     font-weight: bold;
     font-size: 0.85rem;
-
     padding: 6px 12px;
     border-radius: 20px;
-
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     z-index: 2;
 }
 
-/* Зображення настільної гри */
+/* Зображення */
 .card img {
     display: block;
-
     width: 100%;
     height: 250px;
-
     object-fit: cover;
     border-radius: 8px;
     margin-top: 10px;
@@ -230,10 +213,8 @@ section h2 {
 footer {
     text-align: center;
     padding: 25px;
-
     font-size: 0.85rem;
     color: #666666;
-
     background-color: #e9ecef;
     margin-top: 50px;
 }
@@ -294,14 +275,11 @@ footer {
     background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
-
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-
     margin-bottom: 30px;
 
     display: grid;
     grid-template-columns: 1fr 2fr;
-
     gap: 15px;
     align-items: center;
 }
@@ -309,7 +287,6 @@ footer {
 #add-game-form h3 {
     grid-column: 1 / -1;
     margin: 0 0 10px;
-
     font-family: 'Fredoka', sans-serif;
     color: #4F4275;
 }
@@ -322,19 +299,15 @@ footer {
 #add-game-form select {
     width: 100%;
     min-width: 0;
-
     padding: 10px;
-
     border: 1px solid #cccccc;
     border-radius: 4px;
-
     min-height: 44px;
     font-family: 'Inter', sans-serif;
 }
 
 #form-error {
     grid-column: 1 / -1;
-
     color: #b42318;
     font-weight: bold;
     margin: 0;
@@ -359,24 +332,18 @@ footer {
    ПРАКТИКУМ 10. VUE 3
 ========================================= */
 
-/* Кнопки всередині картки */
 .game-genre {
     display: block;
-
     margin-top: 12px;
     padding: 10px 14px;
     min-height: 44px;
-
     background-color: #eee9f5;
     color: #4F4275;
-
     border: 1px solid #6B5B95;
     border-radius: 6px;
-
     font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
     font-weight: bold;
-
     cursor: pointer;
 
     transition: background-color 0.3s;
@@ -386,7 +353,7 @@ footer {
     background-color: #ddd3ed;
 }
 
-/* Інформація про активний жанр */
+/* Активний жанр */
 .genre-filter {
     background-color: #ffffff;
     padding: 15px 20px;
@@ -400,7 +367,6 @@ footer {
     color: #4F4275;
 }
 
-/* Розташування карток на планшеті */
 @media (min-width: 600px) {
     #games-list {
         grid-template-columns:
@@ -408,7 +374,6 @@ footer {
     }
 }
 
-/* Розташування карток на комп'ютері */
 @media (min-width: 1024px) {
     #games-list {
         grid-template-columns:
@@ -418,32 +383,26 @@ footer {
 
 /* =========================================
    ПРАКТИКУМ 12. CSS-АНІМАЦІЇ
-   Варіант 4. Каталог настільних ігор
 ========================================= */
 
-/* Анімоване підсвічування гри дня */
+/* Підсвічування гри дня */
 .game-of-day {
     border: 2px solid #FFD166;
     animation: gameDayPulse 2.5s ease-in-out infinite;
 }
 
-/* Позначка "Гра дня" */
 .game-day-label {
     display: inline-block;
-
     margin: 0 0 10px;
     padding: 5px 12px;
-
     background-color: #FFD166;
     color: #333333;
-
     border-radius: 6px;
-
     font-size: 0.9rem;
     font-weight: bold;
 }
 
-/* Пульсація навколо вибраної картки */
+/* Анімація пульсації */
 @keyframes gameDayPulse {
     0%, 100% {
         box-shadow:
@@ -456,12 +415,11 @@ footer {
     }
 }
 
-/* Контейнер анімованого списку */
+/* Плавна фільтрація */
 #games-list {
     position: relative;
 }
 
-/* Плавна поява та зникнення карток */
 .games-enter-active,
 .games-leave-active {
     transition:
@@ -469,25 +427,20 @@ footer {
         transform 0.4s ease;
 }
 
-/* Стан картки на початку появи
-   або в кінці зникнення */
 .games-enter-from,
 .games-leave-to {
     opacity: 0;
     transform: translateY(15px) scale(0.97);
 }
 
-/* Плавне переміщення після фільтрації */
 .games-move {
     transition: transform 0.4s ease;
 }
 
-/* Картка, що зникає, не заважає іншим */
 .games-leave-active {
     position: absolute;
 }
 
-/* Налаштування доступності */
 @media (prefers-reduced-motion: reduce) {
     .game-of-day {
         animation: none;
@@ -498,4 +451,64 @@ footer {
     .games-move {
         transition: none;
     }
+}
+
+/* =========================================
+   ПРАКТИКУМ 13. SPA ТА МАРШРУТИЗАЦІЯ
+========================================= */
+
+/* Окремі сторінки */
+.spa-page {
+    min-height: 300px;
+}
+
+.spa-page h2 {
+    margin-bottom: 20px;
+}
+
+/* Посилання між маршрутами */
+.spa-link {
+    display: inline-block;
+    width: fit-content;
+    text-decoration: none;
+}
+
+/* Картки на сторінках SPA */
+.spa-cards {
+    margin-top: 25px;
+}
+
+.spa-card {
+    max-width: 460px;
+    margin-top: 20px;
+}
+
+/* Кнопка додавання до колекції */
+.spa-action {
+    margin-top: 15px;
+}
+
+/* Редагування тривалості гри */
+.spa-edit {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.spa-edit label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-weight: bold;
+}
+
+.spa-edit input {
+    width: 180px;
+    padding: 10px;
+    min-height: 44px;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
 }
