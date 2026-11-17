@@ -1,7 +1,8 @@
 
 console.log('script.js підключено');
 
-const API_URL = 'https://jsonplaceholder.typicode.com/todos?userId=1';
+// Практикум 14. Використовуємо власний локальний API
+const API_URL = '/api/games';
 
 /* =========================================
    ПРАКТИКУМ 11. LOCAL STORAGE

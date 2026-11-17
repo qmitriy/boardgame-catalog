@@ -1,0 +1,51 @@
+
+[
+    {
+        "id": 1,
+        "title": "Каркассон",
+        "players": "2-5",
+        "duration": 45,
+        "owned": true,
+        "completed": false
+    },
+    {
+        "id": 2,
+        "title": "Манчкін",
+        "players": "3-6",
+        "duration": 60,
+        "owned": false,
+        "completed": false
+    },
+    {
+        "id": 3,
+        "title": "Монополія",
+        "players": "2-6",
+        "duration": 90,
+        "owned": false,
+        "completed": false
+    },
+    {
+        "id": 4,
+        "title": "Діксіт",
+        "players": "3-6",
+        "duration": 30,
+        "owned": true,
+        "completed": true
+    },
+    {
+        "id": 5,
+        "title": "Кодові імена",
+        "players": "2-8",
+        "duration": 20,
+        "owned": false,
+        "completed": false
+    },
+    {
+        "id": 6,
+        "title": "Ticket to Ride",
+        "players": "2-5",
+        "duration": 60,
+        "owned": false,
+        "completed": false
+    }
+]
