@@ -10,7 +10,7 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const games = require('./games.json');
 
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 const ROOT = path.resolve(__dirname, '..');
 
 const TYPES = {
@@ -164,10 +164,10 @@ const server = http.createServer(async (req, res) => {
 });
 
 // Запуск локального сервера
-server.listen(PORT, '127.0.0.1', () => {
-    console.log(
-        `Сервер запущено: http://127.0.0.1:${PORT}`
-    );
+server.listen(
+    PORT,
+    process.env.PORT ? '0.0.0.0' : '127.0.0.1',
+    () => {
 
     console.log(
         `API: http://127.0.0.1:${PORT}/api/games`

@@ -603,6 +603,15 @@ addGameForm.addEventListener('submit', async event => {
 
     formError.textContent = '';
 
+    // Практикум 15. Перевірка назви гри
+    // Не дозволяємо HTML-розмітку в назві
+    if (title.length > 100 || /[<>]/.test(title)) {
+        formError.textContent =
+            'Назва гри не повинна містити HTML-теги або бути довшою за 100 символів.';
+        return;
+    }
+
+
     // Перевірка кількості гравців
     if (minPlayers > maxPlayers) {
         formError.textContent =
